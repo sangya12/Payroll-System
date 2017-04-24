@@ -29,8 +29,10 @@ public class EmployeeManager
         {
             System.out.println("1. Enter new Employee");
             System.out.println("2. View all Employees");
+            System.out.println("3. Update Employees");
             System.out.println("0. Exit");
             choice = reader.nextInt();
+            System.out.println("Enter your choice:  "+choice);
             switch(choice)
             {
                 case 1:
@@ -39,6 +41,8 @@ public class EmployeeManager
                 case 2:
                     this.ShowEmployees();
                     break;
+                case 3:
+                    this.UpdateEmployees();
                 case 0:
                     return;
                 default:
@@ -47,7 +51,7 @@ public class EmployeeManager
         }while(true);
     }
 
-    private void EnterEmployees()
+    public void EnterEmployees()
     {
         reader.nextLine();  // Consume newline left-over
         Employee emp = new Employee();
@@ -91,4 +95,31 @@ public class EmployeeManager
             System.out.println(emp.name + " " + emp.salary);
         }
     }
+    private void UpdateEmployees()
+    {
+        int ch;
+        System.out.println("Update Employees");
+        System.out.println("\n");
+        System.out.println("1. Add a new employee");
+        System.out.println("2.Delete an employee");
+        System.out.println("3. Print the list");
+        ch=reader.nextInt();
+        System.out.println("\nSelect an option:"+ch);
+        switch(ch)
+        {
+            case 1: 
+                addEmployees();
+                break;
+            case 2:
+                System.out.println("Enter the employee number:");
+                emp.name=reader.nextInt();
+                deleteEmployees();
+                break;
+            case 3:
+                printEmployees();
+                break;
+            default:
+                System.out.println("Wrong input!");
+        }
+    }        
 }
