@@ -14,15 +14,45 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
     }
 
     @Override
-    public boolean Add(Employee entity)
+    public boolean Add(Employee emp)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Employee> emps = new ArrayList<>();
+        emps.add(emp);
+        return Add(emps);
     }
 
     @Override
-    public boolean Add(Iterable<Employee> entities)
+    public boolean Add(Iterable<Employee> employees)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //https://stackoverflow.com/questions/4355046/java-insert-multiple-rows-into-mysql-with-preparedstatement
+        try
+        (
+            Connection conn = dbase.getConnection();
+            PreparedStatement  st = conn.prepareStatement(EmpQueries.InsertQuery);
+        )
+        {
+            conn.setAutoCommit(false);
+            for(Employee emp : employees )
+            {
+                //st.setInt(1, emp.id);
+                st.setString(1, emp.name);
+                st.setString(2, emp.address);
+                st.setString(3, emp.designation);
+                st.setDate(4, new java.sql.Date(emp.joiningDate.getTime())); // http://stackoverflow.com/a/530022
+                st.setBigDecimal(5, emp.salary);
+                st.setBoolean(6, emp.accomodation);
+                st.setBoolean(7, emp.conveyance);
+                st.addBatch();
+            }
+            st.executeBatch();
+            conn.commit();
+            conn.setAutoCommit(true);
+            return true;
+        }catch(Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            return false;
+        }
     }
 
     @Override

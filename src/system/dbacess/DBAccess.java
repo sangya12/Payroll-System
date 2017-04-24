@@ -27,14 +27,20 @@ public class DBAccess
     public ResultSet ExecuteQuery(String query) throws SQLException
     {
         try(
-                Connection conn=DriverManager.getConnection("jdbc:ucanaccess://"+dbPath);
+                Connection conn = DriverManager.getConnection("jdbc:ucanaccess://"+dbPath);
                 Statement st = conn.createStatement();
             )
-        {
+        {            
             return st.executeQuery(query);
+            
         } catch (SQLException ex)
         {
             throw ex;
         }
+    }
+
+    public Connection getConnection() throws SQLException
+    {
+        return DriverManager.getConnection("jdbc:ucanaccess://"+dbPath);
     }
 }
