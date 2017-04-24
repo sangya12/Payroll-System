@@ -4,10 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import system.payroll.core.DataStore;
-import system.payroll.core.Employee;
+import system.payroll.core.*;
 
 public class EmployeeManager
 {
@@ -32,7 +29,8 @@ public class EmployeeManager
             System.out.println("3. Update Employees");
             System.out.println("0. Exit");
             choice = reader.nextInt();
-            System.out.println("Enter your choice:  "+choice);
+            reader.nextLine();  // Consume newline left-over
+            //System.out.println("Enter your choice:  "+choice);
             switch(choice)
             {
                 case 1:
@@ -53,7 +51,6 @@ public class EmployeeManager
 
     public void EnterEmployees()
     {
-        reader.nextLine();  // Consume newline left-over
         Employee emp = new Employee();
         System.out.print("Enter Employee Name : ");
         emp.name = reader.nextLine();
@@ -92,34 +89,20 @@ public class EmployeeManager
         List<Employee> employees = dataStore.Employees().GetAll();
         for(Employee emp : employees )
         {
-            System.out.println(emp.name + " " + emp.salary);
+            System.out.println(emp.id + " " + emp.name + " " + emp.salary);
         }
     }
     private void UpdateEmployees()
     {
-        int ch;
-        System.out.println("Update Employees");
-        System.out.println("\n");
-        System.out.println("1. Add a new employee");
-        System.out.println("2.Delete an employee");
-        System.out.println("3. Print the list");
-        ch=reader.nextInt();
-        System.out.println("\nSelect an option:"+ch);
-        switch(ch)
-        {
-            case 1: 
-                addEmployees();
-                break;
-            case 2:
-                System.out.println("Enter the employee number:");
-                emp.name=reader.nextInt();
-                deleteEmployees();
-                break;
-            case 3:
-                printEmployees();
-                break;
-            default:
-                System.out.println("Wrong input!");
-        }
+        ShowEmployees();
+        System.out.println("Please Enter id of employee to change its values : ");
+        int empId = reader.nextInt();
+        Employee emp = dataStore.Employees().Get(empId); //get function not completed in data sore yet. Complete it too.
+        
+        //Make user to enter new values now
+        
+        System.out.println("Updating...");
+        dataStore.Employees().update(emp); // update function is also not yet completed
+        System.out.println("Done.");
     }        
 }

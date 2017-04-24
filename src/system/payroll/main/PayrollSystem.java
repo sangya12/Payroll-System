@@ -37,7 +37,7 @@ public class PayrollSystem {
             System.out.println();
             System.out.println("1. Manage Employees");
             System.out.println("2. Payroll(Under Development)");
-            System.out.println("3. Update Employees");
+            //System.out.println("3. Update Employees");
             System.out.println("0. Exit");
             choice = reader.nextInt();
             switch(choice)
@@ -46,9 +46,9 @@ public class PayrollSystem {
                     EmployeeManager empManager = new EmployeeManager(dataStore);
                     empManager.start();
                     break;
-                case 3:
+                /*case 3:
                      EmployeeManager empUpdate = new EmployeeManager(dataStore);
-                     empUpdate.start();
+                     empUpdate.start();*/
                 case 0:
                     return;
                 default:
