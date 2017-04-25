@@ -37,18 +37,16 @@ public class PayrollSystem {
             System.out.println();
             System.out.println("1. Manage Employees");
             System.out.println("2. Payroll(Under Development)");
-            //System.out.println("3. Update Employees");
             System.out.println("0. Exit");
+            System.out.println("Enter youor choice:");
             choice = reader.nextInt();
+            System.out.println(choice);
             switch(choice)
             {
                 case 1:
                     EmployeeManager empManager = new EmployeeManager(dataStore);
                     empManager.start();
                     break;
-                /*case 3:
-                     EmployeeManager empUpdate = new EmployeeManager(dataStore);
-                     empUpdate.start();*/
                 case 0:
                     return;
                 default:
