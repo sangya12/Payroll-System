@@ -1,5 +1,6 @@
 package system.payroll.main;
 
+import java.math.BigDecimal;
 import java.util.*;
 import system.dbacess.DBAccess;
 import system.payroll.core.*;

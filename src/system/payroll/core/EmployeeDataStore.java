@@ -58,34 +58,34 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
     @Override
     public Employee Get(int id)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try
+        (
+            Connection conn = dbase.getConnection();
+            PreparedStatement  st = conn.prepareStatement(EmpQueries.GetQuery);
+        )
+        {
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            return FillEmployeeListByResultSet(rs).get(0);
+        }catch(Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            return null;
+        }
     }
 
     @Override
     public List<Employee> GetAll()
     {
-        List<Employee> employees = new ArrayList<>();
         try
         {
             ResultSet rs = dbase.ExecuteQuery(EmpQueries.GetAllQuery);
-            while(rs.next())
-            {
-                Employee emp = new Employee();
-                emp.id = rs.getInt("id");
-                emp.name = rs.getString("name");
-                emp.address = rs.getString("address");
-                emp.designation = rs.getString("designation");
-                emp.joiningDate = rs.getDate("joiningDate");
-                emp.salary = rs.getBigDecimal("salary");
-                emp.accomodation = rs.getBoolean("accomodation");
-                emp.conveyance = rs.getBoolean("connviance");
-                employees.add(emp);
-            }
+            return FillEmployeeListByResultSet(rs);
         } catch (SQLException ex)
         {
             System.out.println(ex.getMessage());
         }
-        return employees;
+        return new ArrayList<>();
     }
 
     @Override
@@ -106,4 +106,22 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    private List<Employee> FillEmployeeListByResultSet(ResultSet rs) throws SQLException
+    {
+        List<Employee> employees = new ArrayList<>();
+        while(rs.next())
+            {
+                Employee emp = new Employee();
+                emp.id = rs.getInt("id");
+                emp.name = rs.getString("name");
+                emp.address = rs.getString("address");
+                emp.designation = rs.getString("designation");
+                emp.joiningDate = rs.getDate("joiningDate");
+                emp.salary = rs.getBigDecimal("salary");
+                emp.accomodation = rs.getBoolean("accomodation");
+                emp.conveyance = rs.getBoolean("connviance");
+                employees.add(emp);
+            }
+        return employees;
+    }
 }
