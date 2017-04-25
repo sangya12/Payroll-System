@@ -3,7 +3,7 @@ package system.payroll.main;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import system.payroll.core.*;
 
 public class EmployeeManager
@@ -28,9 +28,10 @@ public class EmployeeManager
             System.out.println("2. View all Employees");
             System.out.println("3. Update Employees");
             System.out.println("0. Exit");
+            System.out.println("Enter your choice again:");
             choice = reader.nextInt();
+            System.out.println(choice);
             reader.nextLine();  // Consume newline left-over
-            //System.out.println("Enter your choice:  "+choice);
             switch(choice)
             {
                 case 1:
@@ -49,7 +50,7 @@ public class EmployeeManager
         }while(true);
     }
 
-    public void EnterEmployees()
+    private void EnterEmployees()
     {
         Employee emp = new Employee();
         System.out.print("Enter Employee Name : ");
@@ -89,7 +90,7 @@ public class EmployeeManager
         List<Employee> employees = dataStore.Employees().GetAll();
         for(Employee emp : employees )
         {
-            System.out.println(emp.id + " " + emp.name + " " + emp.salary);
+            System.out.println(emp.id + " " + emp.name + " "+emp.address+" "+emp.designation+" "+emp.salary);
         }
     }
     private void UpdateEmployees()
@@ -98,9 +99,10 @@ public class EmployeeManager
         System.out.println("Please Enter id of employee to change its values : ");
         int empId = reader.nextInt();
         Employee emp = dataStore.Employees().Get(empId); //get function not completed in data sore yet. Complete it too.
-        
-        //Make user to enter new values now
-        
+        Scanner sc =new Scanner(System.in);
+        System.out.println("Enter name");
+        String name= sc.next();
+        System.out.println(name);
         System.out.println("Updating...");
         dataStore.Employees().update(emp); // update function is also not yet completed
         System.out.println("Done.");
