@@ -1,5 +1,6 @@
 package system.payroll.main;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -50,6 +51,7 @@ public class EmployeeManager
         }while(true);
     }
 
+    
     private void EnterEmployees()
     {
         Employee emp = new Employee();
@@ -84,25 +86,65 @@ public class EmployeeManager
         System.out.println("Done.");
     }
 
-    private void ShowEmployees()
+    
+    private List<Employee> ShowEmployees()
     {
         System.out.println("Printing all Employees");
         List<Employee> employees = dataStore.Employees().GetAll();
-        for(Employee emp : employees )
+        employees.forEach((emp) ->
         {
             System.out.println(emp.id + " " + emp.name + " "+emp.address+" "+emp.designation+" "+emp.salary);
-        }
+        });
+        return employees;
     }
+    
+    
+    
+    
     private void UpdateEmployees()
     {
         ShowEmployees();
         System.out.println("Please Enter id of employee to change its values : ");
-        int empId = reader.nextInt();
-        Employee emp = dataStore.Employees().Get(empId); //get function not completed in data sore yet. Complete it too.
-        Scanner sc =new Scanner(System.in);
-        System.out.println("Enter name");
-        String name= sc.next();
-        System.out.println(name);
+        
+        int empId = reader.nextInt(); reader.nextLine(); // next line is just for consuming enter. nextInt does not consume enter.
+        
+        //fetching employee from databse using provided id
+        Employee emp = dataStore.Employees().Get(empId);
+        
+        // No need to create new scanner. it is already available as reader. see above at the beginning of this class.
+        String temp;
+        
+        //Brackets will show old values. Change values only if new values are entered otherwise keep old value
+        System.out.println("Press just enter to keep old value.");
+        
+        // Entering Name
+        System.out.print("Enter Employee Name ("+emp.name+") : ");
+        temp = reader.nextLine();
+        emp.name = temp.equals("") ?  emp.name : temp; // pressing just enter will keep the old value
+        // Similarly enter address designation
+        
+        //Entering joining Date
+        do
+        {
+            System.out.print("Enter Employee Joining Date(dd/mm/yyyy) : ");
+            try
+            {
+                temp = reader.nextLine();
+                emp.joiningDate = temp.equals("") ?  emp.joiningDate : new SimpleDateFormat("dd/MM/yyyy").parse(temp);
+                break;
+            } catch (ParseException ex)
+            {
+                System.out.println("Wrong date format.Please Enter Again");
+            }
+        }while(true);
+        
+        //Entering Employee Salary
+        System.out.print("Enter Employee Salary ("+emp.salary+") : ");
+        temp = reader.nextLine();
+        emp.salary = temp.equals("") ?  emp.salary : (new BigDecimal(temp)); //http://stackoverflow.com/a/28784180
+        
+        // trying using same with other variables.
+        
         System.out.println("Updating...");
         dataStore.Employees().update(emp); // update function is also not yet completed
         System.out.println("Done.");
