@@ -118,11 +118,15 @@ public class EmployeeManager
         System.out.println("Press just enter to keep old value.");
         
         // Entering Name
-        System.out.print("Enter Employee Name ("+emp.name+") : ");
+        System.out.println("Enter Employee Name ("+emp.name+") : ");
         temp = reader.nextLine();
         emp.name = temp.equals("") ?  emp.name : temp; // pressing just enter will keep the old value
-        // Similarly enter address designation
-        
+        System.out.println("Enter Employee Address ("+emp.address+") : ");
+        temp = reader.nextLine();
+        emp.address = temp.equals("") ? emp.address : temp;
+        System.out.println("Enter Employee Designation ("+emp.designation+") : "); 
+        temp = reader.nextLine();
+        emp.designation = temp.equals("") ? emp.designation : temp;
         //Entering joining Date
         do
         {
@@ -142,11 +146,14 @@ public class EmployeeManager
         System.out.print("Enter Employee Salary ("+emp.salary+") : ");
         temp = reader.nextLine();
         emp.salary = temp.equals("") ?  emp.salary : (new BigDecimal(temp)); //http://stackoverflow.com/a/28784180
-        
-        // trying using same with other variables.
-        
+        System.out.println("Is accomodation provided?(y/n) ("+emp.accomodation+") : ");
+        temp = reader.nextLine();
+        //emp.accomodation = temp.equals("") ? emp.accomodation : temp;
+        System.out.println("Is conveyance provided?(y/n) ("+emp.conveyance+") : ");
+        temp = reader.nextLine();
+       // emp.conveyance = temp.equals("") ? emp.conveyance : new boolean("n").parse(temp);
         System.out.println("Updating...");
-        dataStore.Employees().update(emp); // update function is also not yet completed
+        dataStore.Employees().update(emp);// update function is also not yet completed
         System.out.println("Done.");
     }        
 }
