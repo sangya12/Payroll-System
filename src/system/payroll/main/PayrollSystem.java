@@ -23,7 +23,8 @@ public class PayrollSystem {
         }
         dataStore = new DataStore(dbase);
         //initialization finished
-        
+        //Employee emp = dataStore.Employees().Get(8);
+        //emp.Payslip(dataStore.Salary().Get(1), (new Deductions()));
         PayrollSystem.start();
         
     }
@@ -37,17 +38,21 @@ public class PayrollSystem {
             System.out.println("Payroll Manager");
             System.out.println();
             System.out.println("1. Manage Employees");
-            System.out.println("2. Payroll(Under Development)");
+            System.out.println("2. Payroll");
             System.out.println("0. Exit");
             System.out.println("Enter youor choice:");
             choice = reader.nextInt();
-            System.out.println(choice);
+            reader.nextLine();
+            //System.out.println(choice);
             switch(choice)
             {
                 case 1:
                     EmployeeManager empManager = new EmployeeManager(dataStore);
                     empManager.start();
                     break;
+                case 2:
+                    PayrollManager payrollManager = new PayrollManager(dataStore);
+                    payrollManager.start();
                 case 0:
                     return;
                 default:
