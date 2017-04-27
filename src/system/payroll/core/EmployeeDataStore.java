@@ -14,14 +14,35 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
     }
 
     @Override
-    public boolean Add(Employee emp)
+    public int Add(Employee emp)
     {
-        List<Employee> emps = new ArrayList<>();
-        emps.add(emp);
-        return Add(emps);
+        try
+        (
+            Connection conn = dbase.getConnection();
+            PreparedStatement  st = conn.prepareStatement(EmpQueries.InsertQuery);
+        )
+        {
+            st.setString(1, emp.name);
+            st.setString(2, emp.address);
+            st.setString(3, emp.designation);
+            st.setDate(4, new java.sql.Date(emp.joiningDate.getTime())); // http://stackoverflow.com/a/530022
+            st.setBoolean(5, emp.accomodation);
+            st.setBoolean(6, emp.conveyance);
+            int rowNums = st.executeUpdate();
+            if( rowNums > 0)
+            {
+                ResultSet rs = st.getGeneratedKeys();
+                rs.next();
+                return rs.getInt(1);
+            }
+            return 0;
+        }catch(Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            return 0;
+        }
     }
 
-    @Override
     public boolean Add(Iterable<Employee> employees)
     {
         //https://stackoverflow.com/questions/4355046/java-insert-multiple-rows-into-mysql-with-preparedstatement
@@ -38,10 +59,9 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
                 st.setString(1, emp.name);
                 st.setString(2, emp.address);
                 st.setString(3, emp.designation);
-                st.setDate(4, new java.sql.Date(emp.joiningDate.getTime())); // http://stackoverflow.com/a/530022
-                st.setBigDecimal(5, emp.salary);
-                st.setBoolean(6, emp.accomodation);
-                st.setBoolean(7, emp.conveyance);
+                st.setDate(4, new java.sql.Date(emp.joiningDate.getTime()));
+                st.setBoolean(5, emp.accomodation);
+                st.setBoolean(6, emp.conveyance);
                 st.addBatch();
             }
             st.executeBatch();
@@ -64,9 +84,9 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
             PreparedStatement  st = conn.prepareStatement(EmpQueries.GetQuery);
         )
         {
-            st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-            return FillEmployeeListByResultSet(rs).get(0);
+        st.setInt(1, id);
+        ResultSet rs = st.executeQuery();
+        return FillEmployeeListByResultSet(rs).get(0);
         }catch(Exception ex)
         {
             System.out.println(ex.getMessage());
@@ -89,15 +109,29 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
     }
 
     @Override
-    public List<Employee> GetRange(int from, int to)
+    public boolean update(Employee emp)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean update(Employee entity)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try
+        (
+            Connection conn = dbase.getConnection();
+            PreparedStatement  st = conn.prepareStatement(EmpQueries.updateQuery);
+        )
+        {
+            st.setString(1, emp.name);
+            st.setString(2, emp.address);
+            st.setString(3, emp.designation);
+            st.setDate(4, new java.sql.Date(emp.joiningDate.getTime()));
+            st.setBoolean(5, emp.accomodation);
+            st.setBoolean(6, emp.conveyance);
+            st.setInt(8, emp.id);
+            
+            st.executeUpdate();            
+            return true;
+        }catch(Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            return false;
+        }
     }
 
     @Override
@@ -117,7 +151,6 @@ public class EmployeeDataStore implements DataStoreInterface<Employee>
                 emp.address = rs.getString("address");
                 emp.designation = rs.getString("designation");
                 emp.joiningDate = rs.getDate("joiningDate");
-                emp.salary = rs.getBigDecimal("salary");
                 emp.accomodation = rs.getBoolean("accomodation");
                 emp.conveyance = rs.getBoolean("connviance");
                 employees.add(emp);

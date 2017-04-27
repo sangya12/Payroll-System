@@ -19,7 +19,6 @@ public class EmployeeManager
     
     public void start()
     {
-        //possibly for future https://stackoverflow.com/questions/26446599/how-to-use-java-util-scanner-to-correctly-read-user-input-from-system-in-and-act
         int choice;
         System.out.println("Manage Employees");
         System.out.println();
@@ -31,7 +30,7 @@ public class EmployeeManager
             System.out.println("0. Exit");
             System.out.println("Enter your choice again:");
             choice = reader.nextInt();
-            System.out.println(choice);
+            //System.out.println(choice);
             reader.nextLine();  // Consume newline left-over
             switch(choice)
             {
@@ -73,16 +72,29 @@ public class EmployeeManager
                 System.out.println("Wrong date format.Please Enter Again");
             }
         }while(true);
-        System.out.print("Enter Employee Salary : ");
-        emp.salary = reader.nextBigDecimal();
+        
         reader.nextLine();  // Consume newline left-over
         System.out.print("Is Accomodation provided(y/n) : ");
         emp.accomodation = "y".equals(reader.nextLine());
         System.out.print("Is conveyance provided(y/n) : ");
         emp.conveyance = "y".equals(reader.nextLine());
         
+        Additions addi = new Additions();
+        System.out.print("Enter Employee Base Salary : ");
+        addi.basicSalary = reader.nextBigDecimal();
+        System.out.print("Enter HRA : ");
+        addi.HRA = reader.nextBigDecimal();
+        System.out.print("Enter DA : ");
+        addi.DA = reader.nextBigDecimal();
+        System.out.print("Enter Medical Allowance : ");
+        addi.MA = reader.nextBigDecimal();
+        
+        
         System.out.println("Saving...");
-        dataStore.Employees().Add(emp);
+        int id = dataStore.Employees().Add(emp);
+        addi.id = id;
+        dataStore.Salary().Add(addi);
+        System.out.println("Id of new employee is " + id);
         System.out.println("Done.");
     }
 
@@ -93,28 +105,23 @@ public class EmployeeManager
         List<Employee> employees = dataStore.Employees().GetAll();
         employees.forEach((emp) ->
         {
-            System.out.println(emp.id + " " + emp.name + " "+emp.address+" "+emp.designation+" "+emp.salary);
+            System.out.println();
+            emp.Display(true);
         });
         return employees;
     }
-    
-    
-    
     
     private void UpdateEmployees()
     {
         ShowEmployees();
         System.out.println("Please Enter id of employee to change its values : ");
         
-        int empId = reader.nextInt(); reader.nextLine(); // next line is just for consuming enter. nextInt does not consume enter.
+        int empId = reader.nextInt(); reader.nextLine();
         
-        //fetching employee from databse using provided id
         Employee emp = dataStore.Employees().Get(empId);
         
-        // No need to create new scanner. it is already available as reader. see above at the beginning of this class.
         String temp;
         
-        //Brackets will show old values. Change values only if new values are entered otherwise keep old value
         System.out.println("Press just enter to keep old value.");
         
         // Entering Name
@@ -142,18 +149,32 @@ public class EmployeeManager
             }
         }while(true);
         
-        //Entering Employee Salary
-        System.out.print("Enter Employee Salary ("+emp.salary+") : ");
+        System.out.print("Is Accomodation provided("+(emp.accomodation?"Yes":"NO")+")(y/n) : ");
         temp = reader.nextLine();
-        emp.salary = temp.equals("") ?  emp.salary : (new BigDecimal(temp)); //http://stackoverflow.com/a/28784180
-        System.out.println("Is accomodation provided?(y/n) ("+emp.accomodation+") : ");
+        emp.accomodation = temp.equals("") ? emp.accomodation : temp.equals("y");
+        
+        System.out.print("Is conveyance provided("+(emp.conveyance?"Yes":"NO")+")(y/n) : ");
         temp = reader.nextLine();
-        //emp.accomodation = temp.equals("") ? emp.accomodation : temp;
-        System.out.println("Is conveyance provided?(y/n) ("+emp.conveyance+") : ");
+        emp.accomodation = temp.equals("") ? emp.conveyance : temp.equals("y");
+        
+        Additions addi = dataStore.Salary().Get(emp.id);
+        System.out.print("Enter Employee Base Salary ("+addi.basicSalary+") : ");
         temp = reader.nextLine();
-       // emp.conveyance = temp.equals("") ? emp.conveyance : new boolean("n").parse(temp);
+        addi.basicSalary = temp.equals("") ?  addi.basicSalary : (new BigDecimal(temp));
+        System.out.print("Enter HRA ("+addi.HRA+")  : ");
+        temp = reader.nextLine();
+        addi.HRA = temp.equals("") ?  addi.HRA : (new BigDecimal(temp));
+        System.out.print("Enter DA ("+addi.DA+")  : ");
+        temp = reader.nextLine();
+        addi.DA = temp.equals("") ?  addi.DA : (new BigDecimal(temp));
+        System.out.print("Enter Medical Allowance ("+addi.MA+")  : ");
+        temp = reader.nextLine();
+        addi.MA = temp.equals("") ?  addi.MA : (new BigDecimal(temp));
+        
         System.out.println("Updating...");
-        dataStore.Employees().update(emp);// update function is also not yet completed
+        emp.Display(true);
+        dataStore.Employees().update(emp);
+        dataStore.Salary().update(addi);
         System.out.println("Done.");
     }        
 }
